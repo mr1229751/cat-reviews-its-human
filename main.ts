@@ -8,8 +8,8 @@ const LINE =
   "One star. Closed the bathroom door again. I screamed until he opened it. I did not go in. That was never the point.";
 
 // Gate guard: the sealed scorer only accepts 1-200 characters, a single line, never only whitespace.
-// A carriage return or newline would break the one-entry promise,
-// so reject them rather than trusting the length check alone.
+// A carriage return or newline would break the single-entry promise,
+// so reject them outright rather than trusting the length check alone.
 if (
   LINE.length < 1 ||
   LINE.length > 200 ||
