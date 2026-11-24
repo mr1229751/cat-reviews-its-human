@@ -1,25 +1,23 @@
-// Make the AI Judge Laugh: Cat Reviews Its Human — make.fun entry.
-// Writes the entry text to /output/entry.txt.
-// Node standard library only; deterministic: same bytes on every run.
+// Cat Reviews Its Human — entry program for make.fun.
+// Emits one fixed one-star review line to the output directory.
+// Uses only the Node standard library and behaves identically on every run.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const LINE =
+const ENTRY_LINE =
   "One star. Closed the bathroom door again. I screamed until he opened it. I did not go in. That was never the point.";
 
-// Gate guard: the sealed scorer only accepts 1-200 characters, a single line, never only whitespace.
-// A carriage return or newline would break the single-entry promise,
-// so reject them outright rather than trusting the length check alone.
-if (
-  LINE.length < 1 ||
-  LINE.length > 200 ||
-  LINE.includes("\n") ||
-  LINE.includes("\r") ||
-  !LINE.trim()
-) {
-  throw new Error("entry line violates the gate constraints");
+function assertEntryIsValid(line: string): void {
+  const isSingleLine = !line.includes("\n") && !line.includes("\r");
+  const hasRealText = line.trim().length > 0;
+  const withinLimit = line.length >= 1 && line.length <= 200;
+  if (!isSingleLine || !hasRealText || !withinLimit) {
+    throw new Error("Entry line must be 1-200 characters on a single line.");
+  }
 }
 
-const outDir = process.env.MAKEFUN_OUTPUT_DIR || "/output";
-mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, "entry.txt"), LINE, "utf8");
+assertEntryIsValid(ENTRY_LINE);
+
+const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+mkdirSync(outputDir, { recursive: true });
+writeFileSync(join(outputDir, "entry.txt"), ENTRY_LINE, "utf8");
